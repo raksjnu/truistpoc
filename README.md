@@ -1,2 +1,71 @@
 # truistpoc
 this file is a test file which we will download in truist as poc for approavl of bringing the file inside truist network.
+            <!-- ProGuard takes the shaded JAR and produces the final protected JAR -->
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.6.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.guardsquare</groupId>
+                        <artifactId>proguard-base</artifactId>
+                        <version>7.2.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.guardsquare</groupId>
+                        <artifactId>proguard-core</artifactId>
+                        <version>9.0.1</version>
+                    </dependency>
+                    <!-- If kotlinx-metadata-jvm is missing from Artifactory, see the note below -->
+                    <dependency>
+                        <groupId>org.jetbrains.kotlinx</groupId>
+                        <artifactId>kotlinx-metadata-jvm</artifactId>
+                        <version>0.4.1</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <proguardVersion>7.2.2</proguardVersion>
+                    <obfuscate>true</obfuscate>
+                    <injar>${project.artifactId}-${project.version}-shaded.jar</injar>
+                    <outjar>${project.artifactId}-${project.version}.jar</outjar>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <options>
+                        <option>-dontshrink</option>
+                        <option>-dontoptimize</option>
+                        <option>-ignorewarnings</option>
+                        <option>-adaptclassstrings</option>
+                        <option>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod</option>
+                        <option>-keep class !com.raks.raksanalyzer.** { *; }</option>
+                        <option>-keep class com.raks.raksanalyzer.**</option>
+                        <option>-keepclassmembers class com.raks.raksanalyzer.** {
+                            public protected *;
+                            void set*(***);
+                            boolean is*();
+                            *** get*();
+                            public static void main(java.lang.String[]);
+                        }</option>
+                        <option>-keepdirectories</option>
+                        <option>-dontwarn **</option>
+                        <option>-dontnote **</option>
+                    </options>
+                    <libs>
+                        <lib>${java.home}/jmods/java.base.jmod</lib>
+                        <lib>${java.home}/jmods/java.desktop.jmod</lib>
+                        <lib>${java.home}/jmods/java.logging.jmod</lib>
+                        <lib>${java.home}/jmods/java.xml.jmod</lib>
+                        <lib>${java.home}/jmods/java.naming.jmod</lib>
+                        <lib>${java.home}/jmods/java.management.jmod</lib>
+                        <lib>${java.home}/jmods/java.security.jgss.jmod</lib>
+                        <lib>${java.home}/jmods/java.instrument.jmod</lib>
+                        <lib>${java.home}/jmods/java.net.http.jmod</lib>
+                    </libs>
+                </configuration>
+            </plugin>
