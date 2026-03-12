@@ -1,9 +1,12 @@
-- "(?s)(?=.*truist\\.authz\\.policy\\.applied\\s*=\\s*true)(?=.*#\\s*client\\.rest\\.security\\.policy\\..*?(applied|resource))"
-- "(?s)#\\s*client\\.rest\\.security\\.policy\\.+resource\\.([^\\r\\n]+)(?![\\s\\S]*?truist\\.authz\\.policy\\.clientIDmap\\.\\1)"
+- type: MANDATORY_PROPERTY_VALUE_CHECK
+              params:
+                filePatterns: ["**/Policies/**/*.policy"]
+                matchMode: ANY_FILE
+                properties:
+                  - name: "truist.authz.policy.applied"
+                    values: ["true"]
+                  - name: "api.contracts.applied"
+                    values: ["true"]
 
 
-045-->
-
-- "(?s)(?=.*truist\\.authz\\.policy\\.applied\\s*=\\s*true)(?=.*api\\.contracts?\\.applied\\s*=\\s*true)"
-
-- "(?s)(?m)(?:^truist\\.authz\\.policy\\.clientIDmap\\.[^=\\n]+=[^#\\n]*?|(?<=;))\\d+:(\\w+);(?=.*?api\\.contracts?\\.list=(?:(?!\\b\\1\\b)[^#\\n])*?(?:\\n|$))"
+- "(?s)(?m)(?:^truist\\.authz\\.policy\\.clientIDmap\\.[^=\\n]+=[^#\\n]*?|(?<=;))[^:\\s]+:(\\w+);(?=.*?api\\.contracts?\\.list=(?:(?!\\b\\1\\b)[^#\\n])*?(?:\\n|$))"
