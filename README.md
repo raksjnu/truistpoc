@@ -1,27 +1,2 @@
-index="mulesoft_eapi" "kubernetes.container_name"="app" "kubernetes.labels.app"="chlogaggregatorapi*" ("REQUEST_IN" OR "RESPONSE_OUT")
-| spath path="log" output=LOG 
-| eval LOG = replace(LOG, "\n", "") 
-| rex field=LOG "\[event:\s*(?<eventId>[^\]]+)\]" 
-| rex field=LOG "apiName=(?<apiName>[^|]+)" 
-| rex field=LOG "apiMethod=(?<apiMethod>[^|]+)" 
-| rex field=LOG "CNName=(?<CNName>[^|]+)" 
-| rex field=LOG "clientId=(?<clientId>[^|]+)" 
-| eval log_type = if(match(LOG, "REQUEST_IN"), "request", "response")
-| stats dc(log_type) as type_count values(apiName) as apiName values(apiMethod) as apiMethod values(CNName) as CNName values(clientId) as clientId by eventId
-| where type_count = 2
-| table apiName, apiMethod, CNName, clientId, eventId
-
-
-index="mulesoft_eapi" "kubernetes.container_name"="app" "kubernetes.labels.app"="chlogaggregatorapi*" ("REQUEST_IN" OR "RESPONSE_OUT")
-| spath path="log" output=LOG 
-| eval LOG = replace(LOG, "\n", "") 
-| rex field=LOG "\[event:\s*(?<eventId>[^\]]+)\]" 
-| rex field=LOG "apiName=(?<apiName>[^|]+)" 
-| rex field=LOG "apiMethod=(?<apiMethod>[^|]+)" 
-| rex field=LOG "CNName=(?<CNName>[^|]+)" 
-| rex field=LOG "clientId=(?<clientId>[^|]+)" 
-| eval log_type = if(match(LOG, "REQUEST_IN"), "request", "response")
-| stats dc(log_type) as type_count values(apiName) as apiName values(apiMethod) as apiMethod values(CNName) as CNName values(clientId) as clientId min(_time) as start_time max(_time) as end_time by eventId
-| where type_count = 2
-| eval duration_seconds = end_time - start_time
-| table apiName, apiMethod, CNName, clientId, eventId, duration_seconds
+- "(?s)(?=.*truist\\.authz\\.policy\\.applied\\s*=\\s*true)(?=.*#\\s*client\\.rest\\.security\\.policy\\..*?(applied|resource))"
+- "(?s)#\\s*client\\.rest\\.security\\.policy\\.+resource\\.([^\\r\\n]+?)\\s*(?![^#\\n]*?truist\\.authz\\.policy\\.clientIDmap\\.\\1\\s*)"
