@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     %% Start
     Start([Developer Commits Code / System Update]) --> Phase1
